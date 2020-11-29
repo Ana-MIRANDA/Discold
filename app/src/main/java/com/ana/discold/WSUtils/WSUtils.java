@@ -3,6 +3,7 @@ package com.ana.discold.WSUtils;
 import android.util.Log;
 
 import com.ana.discold.Beans.MessageBean;
+import com.ana.discold.Beans.UserBean;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -23,6 +24,7 @@ public class WSUtils {
 
         Gson gson = new Gson();
         String msgConv = gson.toJson(msg); //transf a msg messageBean em Json;
+        System.out.println("!!!!!!!!! msg convertida é: "+  msgConv);
         OkHttpUtils.sendPostOkHttpRequest("http://93.0.193.180:8080/envoyerMsg", msgConv);
 
     }
@@ -39,4 +41,23 @@ public class WSUtils {
        // Log.w("tag", "mensagen content" + resultArray.get(0).getContent());  Log.w("tag", "mensagen id" + resultArray.get(0).getId());  Log.w("tag", "mensagen user" + resultArray.get(0).getUser().getPseudo());
         return resultArray;
     }
+
+//verificar os dados de login pseudo e pass
+
+
+    public static Boolean verifyLogin(UserBean u) throws Exception {
+        Gson gson = new Gson();
+        String uConv = gson.toJson(u); //transf user userbean em string de formato Json;
+        String result = OkHttpUtils.sendPostOkHttpRequest("http://93.0.193.180:8080/login", uConv);
+
+        if(result.indexOf("errorMessage") != -1){
+            return false; //encontrou na string a palavra errorMessage, logo ha um erro
+        }
+
+        Gson gson2 = new Gson();
+        UserBean user = gson2.fromJson(result, UserBean.class); //transf de string format Json em Objet
+        u.setId(user.getId()); //vai buscar o id a BD para poder ser usado no
+        return true; //nao encontrou
+    }
+
 }

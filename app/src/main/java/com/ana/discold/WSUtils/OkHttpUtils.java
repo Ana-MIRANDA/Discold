@@ -31,7 +31,7 @@ public class OkHttpUtils {
 
         OkHttpClient client = new OkHttpClient();
         RequestBody body = RequestBody.create(JSON, json);
-        Request pedido = new Request.Builder().url(url).post(body).build();
+        Request pedido = new Request.Builder().url(url).post(body).build(); //construir o pedido
         Response resposta = client.newCall(pedido).execute();
         if(resposta.code() < 200 || resposta.code() >=300) {
             throw new Exception("Incorrect " + resposta.code());

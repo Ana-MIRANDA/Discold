@@ -43,10 +43,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
 
         TextView tvPseudo;
         TextView tv;
-        /*
-        LinearLayout root; //o layout dentro do qual estao os textviews q sao netos do recyclerview e que vai ser clicado
-        TextView tv; // para apresentar o nome da raca
-        TextView tvSubRaces;//para apreentar a descriçao da raca*/
+
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -54,13 +51,8 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
             tvPseudo= itemView.findViewById(R.id.tvPseudo);
             tv = itemView.findViewById(R.id.tv);
 
-            /*
-            root = itemView.findViewById(R.id.root);
-            tvSubRaces = itemView.findViewById(R.id.tvSubRaces);*/
         }
     }
-
-
 
 
 }//fecha a classe

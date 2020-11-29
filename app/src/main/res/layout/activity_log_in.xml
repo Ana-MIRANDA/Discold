@@ -12,7 +12,7 @@ android:orientation="vertical">
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/purple_200"
-    android:backgroundTint="@color/purple_200"
+
     android:orientation="horizontal">
 
     <Spinner
@@ -21,7 +21,7 @@ android:orientation="vertical">
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:background="@color/black"
-        android:backgroundTint="@color/purple_200"
+
         android:dropDownSelector="@android:drawable/ic_menu_sort_by_size" />
 
     <EditText
@@ -58,28 +58,42 @@ android:orientation="vertical">
         android:orientation="vertical"
         android:padding="10dp">
 
+
         <TextView
-            android:id="@+id/textView3"
-            android:layout_width="wrap_content"
+            android:id="@+id/textView"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="10dp"
-            android:text="TextView" />
+            android:text="Your Pseudo" />
 
         <EditText
             android:id="@+id/etUserPseudo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:backgroundTint="@color/white"
+
+            android:background="#F3ECEC"
             android:ems="10"
-            android:inputType="textPersonName"
-            android:text="Name" />
+            android:inputType="textPersonName" />
+
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Your Password" />
+
+        <EditText
+            android:id="@+id/etPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#EFEAEA"
+            android:ems="10"
+            android:inputType="textPassword" />
 
         <Button
             android:onClick="goChat"
             android:id="@+id/btnLogin"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@+id/data_linear"
             android:text="Connection"
             android:textColor="@android:color/white" />
     </LinearLayout>

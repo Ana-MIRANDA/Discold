@@ -46,13 +46,14 @@ public class MainActivity extends AppCompatActivity {
         etMsg = findViewById(R.id.etMsg);
 
 
-
-//Recuperar pseudo que vem da login activity : bundle
-
+//Recuperar pseudo que vem da login activity : bundle para incluir na msg
         if( getIntent().getExtras()!= null) {
             Bundle bundle = getIntent().getExtras();
+            Long id = bundle.getLong("id");
+            System.out.println("--------------o id é: "+ id);
             String pseudo = bundle.getString("pseudo"); //o que o user escrveer no editText
-            user = new UserBean(pseudo); //criar um user com o pseudo transmitido na linha de cima
+
+            user = new UserBean(id,pseudo); //criar um user com o pseudo transmitido na linha de cima
         } else {
             System.out.println("!!!!falta pseudo");
         }
@@ -69,9 +70,8 @@ public class MainActivity extends AppCompatActivity {
 
     }//Fecha a oncreate
 
-//clic btnSend+ enviar msg
+//clic btnSend+ enviar msg - envoyer message(Post)
     public void sendMessage(View view) {
-//envoyer message(Post)
 
         String msgContent = String.valueOf(etMsg.getText()); //tranformar o conteudo numa string para nao ser um editable
         MessageBean newMsg = new MessageBean(msgContent, user); //este user e criado na OnCreate
@@ -118,8 +118,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
         thread.start();
-
-
     } //fecha listMsgUpdated
 
 }//fecha classe
