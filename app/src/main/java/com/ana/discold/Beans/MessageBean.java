@@ -4,8 +4,11 @@ public class MessageBean {
     private Long id;
     private String content;
     private UserBean user;
+    private Long date;
 
- //constructor1
+
+
+    //constructor1
     public MessageBean(Long id, String content, UserBean user) {
         this.id = id;
         this.content = content;
@@ -17,7 +20,7 @@ public class MessageBean {
         this.user = user;
     }
 
-    //constructor
+//constructor
 
 
 //Getters and setters
@@ -43,5 +46,13 @@ public class MessageBean {
 
     public void setUser(UserBean user) {
         this.user = user;
+    }
+
+    public void setDate(Long date) {
+        this.date = date;
+    }
+
+    public Long getDate() {
+        return date;
     }
 }

@@ -11,20 +11,22 @@ import android.widget.Toast;
 import com.ana.discold.Beans.UserBean;
 import com.ana.discold.WSUtils.WSUtils;
 
-public class LogInActivity extends AppCompatActivity {
+public class RegisterActivity extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_register);
+    }
 
     private EditText etUserPseudo;
     private EditText etPassword;
 
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_log_in);
-    }//fecha a oncreate
 
-//ir p o chat depois de indicar pseudo
-    public void goChat(View view) {
+
+    //ir p o chat depois de indicar pseudo
+    public void goRegister(View view) {
 
         etUserPseudo=findViewById(R.id.etUserPseudo);
         String userPseudo = String.valueOf(etUserPseudo.getText()); //nao poder ser so geText() pk por defeito e do tipo editable e eu quero String
@@ -40,16 +42,16 @@ public class LogInActivity extends AppCompatActivity {
             @Override
             public void run() {
                 try {
-                    UserBean user = WSUtils.verifyLogin(u);
+                    UserBean user = WSUtils.register(u);
                     if( user != null ) { // si true on passe a la MainActivity
-                        Intent intent = new Intent(LogInActivity.this, MainActivity.class);
+                        Intent intent = new Intent(RegisterActivity.this, MainActivity.class);
                         intent.putExtra("user", user); //para passar o id de u fizemos serializable ao objejto em vez de bundle.putExtra(id) e assim para pseudo e passwprd
                         startActivity(intent);
                     } else { //si erreur
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                Toast.makeText(LogInActivity.this, "Password and/or pseudo invalids!!",
+                                Toast.makeText(RegisterActivity.this, "Password and/or pseudo invalids!!",
                                         Toast.LENGTH_LONG).show();
                             }
                         });
@@ -62,9 +64,4 @@ public class LogInActivity extends AppCompatActivity {
         thread.start();
 
     }
-
-    public void goRegister(View view){
-        Intent intent = new Intent(LogInActivity.this, RegisterActivity.class);
-       startActivity(intent);
-    }
-} //fecha a class
+}

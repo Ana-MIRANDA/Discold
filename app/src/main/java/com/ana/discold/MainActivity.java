@@ -26,7 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private MessageAdapter adapter = new MessageAdapter(messageArrayList);//esta lista é a q e passada ao adapter para ele mostrar no textview como eu lhe peco
     private RecyclerView rv;
     private EditText etMsg;
-    private UserBean user; //buscar valor de pseudo vinda do login bundle
+    private UserBean user; //valeur pseudo
 
 
 
@@ -48,14 +48,12 @@ public class MainActivity extends AppCompatActivity {
 
 //Recuperar pseudo que vem da login activity : bundle para incluir na msg
         if( getIntent().getExtras()!= null) {
-            Bundle bundle = getIntent().getExtras();
-            Long id = bundle.getLong("id");
-            System.out.println("--------------o id é: "+ id);
-            String pseudo = bundle.getString("pseudo"); //o que o user escrveer no editText
-
-            user = new UserBean(id,pseudo); //criar um user com o pseudo transmitido na linha de cima
+            user = (UserBean) getIntent().getSerializableExtra("user");
+            System.out.println("-------------------mainactivity o user tem guardado : " + user.getIdSession() + " id " + user.getId() + "name " + user.getPseudo() + "psw" + user.getPassword());
         } else {
             System.out.println("!!!!falta pseudo");
+            finish();
+            return;
         }
 
 //chamar funçao de pedir a lista de msgs a cada 2 segundos para parecer um chat verdadeiro - pk nao estamos a usar websockets(socket.io, etc)
@@ -64,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 listMsgUpdated();
             }
-        }, 0, 2000);//put here time 1000 milliseconds=1 second
+        }, 0, 2000);//pour reload liste de msgs à tous les 2 secondes
 
 
 
@@ -76,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         String msgContent = String.valueOf(etMsg.getText()); //tranformar o conteudo numa string para nao ser um editable
         MessageBean newMsg = new MessageBean(msgContent, user); //este user e criado na OnCreate
 
-        Thread thread = new Thread(new Runnable() { //async logo dentro de thread
+        Thread thread = new Thread(new Runnable() { //async  donc il faut un thread
             @Override
             public void run() {
                 try {
@@ -86,15 +84,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
         thread.start();
-        etMsg.setText(""); //limpar o espaço de escrita da msg
-        listMsgUpdated(); //para atualizar a lista de msgs
-    }//fecha a sendMessage()
+        etMsg.setText(""); //reset inputs
+        listMsgUpdated(); //update listMsg
+    }
 
 
     public void listMsgUpdated(){
 
-        //como a seguir sao funçoes que demoram tempo pk vao buscar respostas a net, corram paralemente a stack principal/main, logo precisamos de thread para nao interromper o correr da main
+        //les fonctions suivantes prendront du temps à recuperer des infos de l'internt, on utilise thread
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -103,13 +102,13 @@ public class MainActivity extends AppCompatActivity {
                 try  {
                     //Log.w("tag","funçao" +WSUtils.getListMsgConv());
                     messageArrayList.clear();
-                    messageArrayList.addAll(WSUtils.getListMsgConv());
+                    messageArrayList.addAll(WSUtils.getListMsgConv(user));
 
-                    //mudança grafica e feita com RunOnUiThread()
+                    //changement graphique
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            adapter.notifyDataSetChanged(); //avisar qur as donnees mudararm e fazer reload
+                            adapter.notifyDataSetChanged(); //alert sur changements de données et faire reload
                         }
                     });
                 } catch (Exception e) {

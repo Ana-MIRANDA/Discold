@@ -1,9 +1,12 @@
 package com.ana.discold.Beans;
 
-public class UserBean {
+import java.io.Serializable;
+
+public class UserBean implements Serializable {
         private Long id;
         private String pseudo;
         private String password;
+        private String idSession;
 
 
 //constructor 1
@@ -25,7 +28,10 @@ public UserBean(Long id,String pseudo) {
     this.id = id;
     this.pseudo = pseudo;
 }
-
+//constructor 4
+public UserBean(String idSession) {
+    this.idSession = idSession;
+}
 
 
     //Getters and setters
@@ -51,5 +57,13 @@ public UserBean(Long id,String pseudo) {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getIdSession() {
+        return idSession;
+    }
+
+    public void setIdSession(String idSession) {
+        this.idSession = idSession;
     }
 }

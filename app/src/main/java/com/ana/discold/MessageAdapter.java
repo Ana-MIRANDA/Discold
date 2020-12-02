@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ana.discold.Beans.MessageBean;
 
+import java.sql.Timestamp;
 import java.util.ArrayList;
 
 public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHolder> {
@@ -32,7 +33,7 @@ public class MessageAdapter extends RecyclerView.Adapter<MessageAdapter.ViewHold
     @Override
     public void onBindViewHolder(@NonNull MessageAdapter.ViewHolder holder, int position) {
         MessageBean m = listMsgs.get(position); //a msg correspondente a linha
-        holder.tvPseudo.setText(m.getUser().getPseudo()); //vai buscar o pseudo
+        holder.tvPseudo.setText(m.getUser().getPseudo()  +" sent: "+ new Timestamp(m.getDate()) ); //vai buscar o pseudo
         holder.tv.setText(m.getContent());
     }
 
