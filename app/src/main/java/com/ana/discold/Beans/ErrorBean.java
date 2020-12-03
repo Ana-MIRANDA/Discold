@@ -2,12 +2,13 @@ package com.ana.discold.Beans;
 
 public class ErrorBean {
 
+    private String errorMessage;
 
     public ErrorBean(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 
-    private String errorMessage;
+
 
     public ErrorBean() {
     }

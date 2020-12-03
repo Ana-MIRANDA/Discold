@@ -6,9 +6,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 
 import com.ana.discold.Beans.MessageBean;
 import com.ana.discold.Beans.UserBean;
@@ -19,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -27,6 +31,10 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rv;
     private EditText etMsg;
     private UserBean user; //valeur pseudo
+
+    //progressbar
+    private ProgressBar progressBar;
+    Handler handler;
 
 
 
@@ -41,9 +49,13 @@ public class MainActivity extends AppCompatActivity {
         //o adapter a controlar a rv
         rv.setAdapter(adapter);
         //a forma como se vai apresentar:linhas ou colonas.Neste caso linhas
-        rv.setLayoutManager(new GridLayoutManager(this,1));
+        rv.setLayoutManager(new GridLayoutManager(this, 1));
         //conteudo da msg
         etMsg = findViewById(R.id.etMsg);
+
+        //progressBar
+       progressBar = findViewById(R.id.progressBar);
+        handler = new Handler(Looper.getMainLooper());
 
 
 //Recuperar pseudo que vem da login activity : bundle para incluir na msg
@@ -64,53 +76,69 @@ public class MainActivity extends AppCompatActivity {
             }
         }, 0, 2000);//pour reload liste de msgs à tous les 2 secondes
 
-
-
     }//Fecha a oncreate
 
 //clic btnSend+ enviar msg - envoyer message(Post)
     public void sendMessage(View view) {
 
-        String msgContent = String.valueOf(etMsg.getText()); //tranformar o conteudo numa string para nao ser um editable
-        MessageBean newMsg = new MessageBean(msgContent, user); //este user e criado na OnCreate
+        MessageBean newMsg = new MessageBean(etMsg.getText().toString(), user); //este user e criado na OnCreate
 
         Thread thread = new Thread(new Runnable() { //async  donc il faut un thread
             @Override
             public void run() {
                 try {
                     WSUtils.sendMessageConv(newMsg);
+                    etMsg.setText(""); //reset inputs updateMsg()
+                    listMsgUpdated(); //update listMsg
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
         });
-
         thread.start();
-        etMsg.setText(""); //reset inputs
-        listMsgUpdated(); //update listMsg
     }
 
 
     public void listMsgUpdated(){
+
+        ///para a progressBar sn diz k so pode correr na mainthread
+        handler.post(new Runnable() {
+            @Override
+            public void run() {
+                progressBar.setVisibility(View.VISIBLE);
+            }
+        });
+
+
 
         //les fonctions suivantes prendront du temps à recuperer des infos de l'internt, on utilise thread
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
 
-//Recuperer liste de messages (Get)
+//Recuperer liste de messages (Post)
                 try  {
                     //Log.w("tag","funçao" +WSUtils.getListMsgConv());
                     messageArrayList.clear();
                     messageArrayList.addAll(WSUtils.getListMsgConv(user));
+
 
                     //changement graphique
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             adapter.notifyDataSetChanged(); //alert sur changements de données et faire reload
+
+                         //para a progressBar sn diz k so pode correr na mainthread
+                        handler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                progressBar.setVisibility(View.INVISIBLE);
+                            }
+                        });
                         }
                     });
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -118,5 +146,9 @@ public class MainActivity extends AppCompatActivity {
         });
         thread.start();
     } //fecha listMsgUpdated
+
+
+
+
 
 }//fecha classe

@@ -24,6 +24,14 @@
         </LinearLayout>
     </ScrollView>
 
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        style="@android:style/Widget.Holo.ProgressBar.Large"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -39,13 +47,16 @@
             android:text="Name" />
 
         <Button
-
             android:id="@+id/btnSend"
             android:onClick="sendMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:text="Send" />
+
+
+
+
     </LinearLayout>
 
 </LinearLayout>

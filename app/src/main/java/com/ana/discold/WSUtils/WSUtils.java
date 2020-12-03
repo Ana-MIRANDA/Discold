@@ -16,6 +16,7 @@ import java.util.ArrayList;
 public class WSUtils {
     //constante avec l'url
     static final String URL ="http://93.0.193.180:8080/";
+    static final Gson gson = new Gson();
     
 //TESTE
     public static String teste() throws Exception {
@@ -24,52 +25,56 @@ public class WSUtils {
 
 //enviar msgs serveur - POST! recebe uma messageBean, transforma-a no tipo String de formatoJson e manda p o servidor
     public static void sendMessageConv(MessageBean msg) throws Exception {
-        Gson gson = new Gson();
-        String msgConv = gson.toJson(msg); //transf a msg messageBean em Json;
-        OkHttpUtils.sendPostOkHttpRequest(URL + "envoyerMsg", msgConv);
+
+        //transf a msg messageBean em Json;
+        String listMessages = OkHttpUtils.sendPostOkHttpRequest(URL + "envoyerMsg",  gson.toJson(msg));
+        if(listMessages.contains("errorMessage")){ //sil y a un erreur
+
+            ErrorBean error = gson.fromJson(listMessages, ErrorBean.class); //transf dee l'erreur msg de string format Json en Objet
+            throw new Exception(error.getErrorMessage());
+        }
     }
 
-//Receber lista de mensagens - GET
+//Receber lista de mensagens
     public static ArrayList<MessageBean> getListMsgConv(UserBean u) throws Exception {//Aqui nao pus dentro de try e catch pk esta funçao em mainactivity e chamada dentro deles
-        Gson gson = new Gson();
-        String uConv = gson.toJson(u); //transf user userbean en string format Json;
-        String listMessages = OkHttpUtils.sendPostOkHttpRequest(URL + "listeMsg", uConv);
-        ArrayList<MessageBean> resultArray = gson.fromJson(listMessages, new TypeToken<ArrayList<MessageBean>>(){}.getType()); // transf a string listMessage num array de objetos (de string a array) e getType() substitui o messageBean.class - vi na net
 
-        return resultArray;
+        //transf user userbean en string format Json;
+        String listMessages = OkHttpUtils.sendPostOkHttpRequest(URL + "listeMsg",gson.toJson(u));
+
+        if(listMessages.contains("errorMessage")){ //sil y a un erreur
+
+            ErrorBean error = gson.fromJson(listMessages, ErrorBean.class); //transf dee l'erreur msg de string format Json en Objet
+            throw new Exception(error.getErrorMessage());
+        }
+      return gson.fromJson(listMessages, new TypeToken<ArrayList<MessageBean>>(){}.getType()); // transf a string listMessage num array de objetos (de string a array) e getType() substitui o messageBean.class - vi na net
     }
 
-//verificar os dados de login pseudo e pass
+//verifier login pseudo e pass
 
     public static UserBean verifyLogin(UserBean u) throws Exception {
-        Gson gson = new Gson();
-        String uConv = gson.toJson(u); //transf user userbean en string format Json;
-        String result = OkHttpUtils.sendPostOkHttpRequest(URL + "login", uConv); //obj userbean com proporiedade idSession
 
-        if(result.indexOf("errorMessage") != -1){ //sil y a un erreur
-            return null;
-            /*ErrorBean error = gson.fromJson(result, ErrorBean.class); //transf dee l'erreur msg de string format Json en Objet
-            throw new Exception(error.getErrorMessage());*/
-        }
-        UserBean user = gson.fromJson(result, UserBean.class); //transf de string format Json em Objet
+        //transf user userbean en string format Json;
+        String result = OkHttpUtils.sendPostOkHttpRequest(URL + "login",gson.toJson(u)); //obj userbean com proporiedade idSession
 
-        return user;
-    }
+        if(result.contains("errorMessage")){ //sil y a un erreur
 
-    //creer l xml et tester
-    public static UserBean register(UserBean u) throws Exception {
-        Gson gson = new Gson();
-        String uConv = gson.toJson(u); //transf user userbean en string format Json;
-        String result = OkHttpUtils.sendPostOkHttpRequest(URL + "register", uConv); //obj userbean com proporiedade idSession
-
-        if(result.indexOf("errorMessage") != -1){ //sil y a un erreur
             ErrorBean error = gson.fromJson(result, ErrorBean.class); //transf dee l'erreur msg de string format Json en Objet
             throw new Exception(error.getErrorMessage());
         }
-        UserBean user = gson.fromJson(result, UserBean.class); //transf de string format Json em Objet
-
-        return user;
+        return gson.fromJson(result, UserBean.class); //transf de string format Json em Objet
     }
 
+    //register un nouveau user
+    public static UserBean register(UserBean u) throws Exception {
 
+         //transf user userbean en string format Json;
+        String result = OkHttpUtils.sendPostOkHttpRequest(URL + "register", gson.toJson(u)); //obj userbean avc propriete idSession
+
+        if(result.contains("errorMessage")){ //sil y a un erreur
+
+            ErrorBean error = gson.fromJson(result, ErrorBean.class); //transf dee l'erreur msg de string format Json en Objet
+            throw new Exception(error.getErrorMessage());
+        }
+       return  gson.fromJson(result, UserBean.class); //transf de string format Json em Objet
+    }
 }
