@@ -37,7 +37,6 @@ public class RegisterActivity extends AppCompatActivity {
         //le serveur recoit pseudo et pasw
         final UserBean u = new UserBean(userPseudo, userPassword);
 
-
         Thread thread = new Thread(new Runnable() { //async logo dentro de thread. Nao se pode fazer chamadas a net a partir da main thread sn bloqueia a aplicacao
             @Override
             public void run() {

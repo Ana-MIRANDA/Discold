@@ -12,11 +12,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.ana.discold.Beans.MessageBean;
 import com.ana.discold.Beans.UserBean;
 import com.ana.discold.WSUtils.OkHttpUtils;
 import com.ana.discold.WSUtils.WSUtils;
+
+import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Timer;
@@ -34,7 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     //progressbar
     private ProgressBar progressBar;
-    Handler handler;
+    private TextView tVError;
+
 
 
 
@@ -55,7 +59,8 @@ public class MainActivity extends AppCompatActivity {
 
         //progressBar
        progressBar = findViewById(R.id.progressBar);
-        handler = new Handler(Looper.getMainLooper());
+       tVError = findViewById(R.id.tVError);
+
 
 
 //Recuperar pseudo que vem da login activity : bundle para incluir na msg
@@ -78,38 +83,69 @@ public class MainActivity extends AppCompatActivity {
 
     }//Fecha a oncreate
 
+
 //clic btnSend+ enviar msg - envoyer message(Post)
     public void sendMessage(View view) {
 
         MessageBean newMsg = new MessageBean(etMsg.getText().toString(), user); //este user e criado na OnCreate
+        progressBarVisibility(true);
 
         Thread thread = new Thread(new Runnable() { //async  donc il faut un thread
             @Override
             public void run() {
                 try {
                     WSUtils.sendMessageConv(newMsg);
-                    etMsg.setText(""); //reset inputs updateMsg()
+                    clearInput(); //limpar input de espaço no texto
                     listMsgUpdated(); //update listMsg
                 } catch (Exception e) {
+                    msgErrorVisible("Désolé! Un erreur est survenu!");
                     e.printStackTrace();
                 }
+                progressBarVisibility(false);
             }
         });
         thread.start();
     }
 
 
+    public void clearInput(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                etMsg.setText(""); //reset inputs updateMsg()
+            }
+        });
+    }
+
+    public void msgErrorVisible(String errorTxt){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                tVError.setText(errorTxt);
+                tVError.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    //progressBar
+    public void progressBarVisibility(boolean visible){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if(visible){
+                    progressBar.setVisibility(View.VISIBLE);
+                }else {
+                    progressBar.setVisibility(View.INVISIBLE);
+                }
+            }
+        });
+    }
+
+
+
     public void listMsgUpdated(){
 
         ///para a progressBar sn diz k so pode correr na mainthread
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                progressBar.setVisibility(View.VISIBLE);
-            }
-        });
-
-
 
         //les fonctions suivantes prendront du temps à recuperer des infos de l'internt, on utilise thread
         Thread thread = new Thread(new Runnable() {
@@ -122,20 +158,11 @@ public class MainActivity extends AppCompatActivity {
                     messageArrayList.clear();
                     messageArrayList.addAll(WSUtils.getListMsgConv(user));
 
-
                     //changement graphique
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
                             adapter.notifyDataSetChanged(); //alert sur changements de données et faire reload
-
-                         //para a progressBar sn diz k so pode correr na mainthread
-                        handler.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                progressBar.setVisibility(View.INVISIBLE);
-                            }
-                        });
                         }
                     });
 
