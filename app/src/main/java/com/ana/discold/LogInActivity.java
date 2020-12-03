@@ -45,26 +45,28 @@ public class LogInActivity extends AppCompatActivity {
                         Intent intent = new Intent(LogInActivity.this, MainActivity.class);
                         intent.putExtra("user", user); //para passar o id de u fizemos serializable ao objejto em vez de bundle.putExtra(id) e assim para pseudo e passwprd
                         startActivity(intent);
-                    } else { //si erreur
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(LogInActivity.this, "Password and/or pseudo invalids!!",
-                                        Toast.LENGTH_LONG).show();
-                            }
-                        });
                     }
                 } catch (Exception e) {
+                    errorLogin();
                     e.printStackTrace();
                 }
             }
         });
         thread.start();
-
     }
 
     public void goRegister(View view){
         Intent intent = new Intent(LogInActivity.this, RegisterActivity.class);
        startActivity(intent);
+    }
+
+    public void errorLogin(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Toast.makeText(LogInActivity.this, "Password and/or pseudo invalids!!",
+                        Toast.LENGTH_LONG).show();
+            }
+        });
     }
 } //fecha a class
