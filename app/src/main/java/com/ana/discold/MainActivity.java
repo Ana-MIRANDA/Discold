@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 listMsgUpdated();
             }
-        }, 0, 2000);//pour reload liste de msgs à tous les 2 secondes
+        }, 0, 5000);//pour reload liste de msgs à tous les 2 secondes
 
     }//Fecha a oncreate
 
