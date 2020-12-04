@@ -62,11 +62,10 @@ public class MainActivity extends AppCompatActivity {
        tVError = findViewById(R.id.tVError);
 
 
-
 //Recuperar pseudo que vem da login activity : bundle para incluir na msg
         if( getIntent().getExtras()!= null) {
             user = (UserBean) getIntent().getSerializableExtra("user");
-            System.out.println("-------------------mainactivity o user tem guardado : " + user.getIdSession() + " id " + user.getId() + "name " + user.getPseudo() + "psw" + user.getPassword());
+           // System.out.println("-------------------mainactivity o user tem guardado : " + user.getIdSession() + " id " + user.getId() + "name " + user.getPseudo() + "psw" + user.getPassword());
         } else {
             System.out.println("!!!!falta pseudo");
             finish();
@@ -79,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 listMsgUpdated();
             }
-        }, 0, 5000);//pour reload liste de msgs à tous les 2 secondes
+        }, 0, 5000);//pour reload liste de msgs à tous les 5 secondes
 
     }//Fecha a oncreate
 
@@ -95,7 +94,7 @@ public class MainActivity extends AppCompatActivity {
             public void run() {
                 try {
                     WSUtils.sendMessageConv(newMsg);
-                    clearInput(); //limpar input de espaço no texto
+                    clearInput(); //limpar input msg
                     listMsgUpdated(); //update listMsg
                 } catch (Exception e) {
                     msgErrorVisible("Désolé! Un erreur est survenu!");
@@ -112,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                etMsg.setText(""); //reset inputs updateMsg()
+                etMsg.setText(""); //reset input ecrire message
             }
         });
     }
